@@ -38,7 +38,6 @@
     "import/prefer-default-export": "off",
     "no-use-before-define": "off",
     "class-methods-use-this": "off",
-    // "prettier/prettier": "error",
     "no-console": "off",
     "camelcase": "off",
     "no-shadow": "off",
@@ -77,9 +76,6 @@
           "**/*.spec.js"
         ]
       }
-    ],
-    "@typescript-eslint/no-use-before-define": [
-      "error"
     ],
     "import/extensions": [
       "error",
