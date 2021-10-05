@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules --respawn src/server.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli",
-    "migration": "typeorm migration:run"
+    "migration": "ts-node-dev ./node_modules/typeorm/cli migration:run",
+    "docker": "docker-compose up --force-recreate"
   },
   "dependencies": {
     "csv-parse": "^4.16.3",
