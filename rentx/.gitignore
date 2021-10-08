@@ -2,3 +2,6 @@
 /dist
 /tmp
 yarn-error.*
+
+.env
+.env.*
