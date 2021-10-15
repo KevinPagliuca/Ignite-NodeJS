@@ -57,7 +57,7 @@ describe('Authenticate User', () => {
 
       await authenticateUserUseCase.execute({
         email: user.email,
-        password: user.password,
+        password: 'incorrectPassword',
       });
     }).rejects.toBeInstanceOf(AppError);
   });
