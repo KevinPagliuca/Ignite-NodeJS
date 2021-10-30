@@ -20,6 +20,8 @@ class CarsRepository implements ICarsRepository {
     daily_rate,
     fine_amount,
     license_plate,
+    specifications,
+    id,
   }: ICreateCarDTO): Promise<Car> {
     const car = this.repository.create({
       name,
@@ -29,10 +31,13 @@ class CarsRepository implements ICarsRepository {
       daily_rate,
       fine_amount,
       license_plate,
+      specifications,
+      id,
     });
     await this.repository.save(car);
     return car;
   }
+
   async findByLicensePalate(license_plate: string): Promise<Car> {
     const car = await this.repository.findOne({
       license_plate,
@@ -50,19 +55,24 @@ class CarsRepository implements ICarsRepository {
       .where('available = available', { availble: true });
 
     if (brand) {
-      carsQuery.andWhere('LOWER(c.brand) = LOWER(:brand)', { brand });
+      carsQuery.andWhere('LOWER(brand) = LOWER(:brand)', { brand });
     }
     if (category_id) {
       carsQuery.andWhere('category_id = :category_id', { category_id });
     }
     if (name) {
-      carsQuery.andWhere('LOWER(c.name) LIKE :name', {
+      carsQuery.andWhere('LOWER(name) LIKE :name', {
         name: `%${name.toLowerCase()}%`,
       });
     }
 
     const cars = await carsQuery.getMany();
     return cars;
+  }
+
+  async findById(id: string): Promise<Car> {
+    const car = await this.repository.findOne(id);
+    return car;
   }
 }
 
