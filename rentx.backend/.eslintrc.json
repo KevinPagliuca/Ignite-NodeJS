@@ -45,6 +45,7 @@
     "no-empty-function": "off",
     "lines-between-class-members": "off",
     "no-useless-return": "off",
+    "no-return-await": "warn",
     "prettier/prettier": [
       "error",
       {
