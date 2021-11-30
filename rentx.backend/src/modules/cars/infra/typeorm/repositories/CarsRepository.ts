@@ -1,7 +1,10 @@
 import { getRepository, Repository } from 'typeorm';
 
 import { ICreateCarDTO } from '@modules/cars/dtos/ICreateCarDTO';
-import { ICarsRepository } from '@modules/cars/repositories/ICarsRepository';
+import {
+  ICarResponse,
+  ICarsRepository,
+} from '@modules/cars/repositories/ICarsRepository';
 
 import { Car } from '../entities/Car';
 
@@ -38,10 +41,18 @@ class CarsRepository implements ICarsRepository {
     return car;
   }
 
-  async findByLicensePalate(license_plate: string): Promise<Car> {
-    const car = await this.repository.findOne({
-      license_plate,
-    });
+  async findByLicensePalate(license_plate: string): Promise<ICarResponse> {
+    const car: ICarResponse = await this.repository
+      .createQueryBuilder('cars')
+      .where('cars.available = available', { available: true })
+      .andWhere('cars.license_plate = :license_plate', { license_plate })
+      .leftJoinAndSelect(
+        'categories',
+        'categories',
+        'categories.id = cars.category_id'
+      )
+      .select(['cars.*', 'categories.name as category_name'])
+      .getRawOne();
     return car;
   }
 
@@ -49,29 +60,47 @@ class CarsRepository implements ICarsRepository {
     brand?: string,
     category_id?: string,
     name?: string
-  ): Promise<Car[]> {
+  ): Promise<ICarResponse[]> {
     const carsQuery = this.repository
-      .createQueryBuilder('c')
-      .where('available = available', { availble: true });
+      .createQueryBuilder('cars')
+      .where('cars.available = available', { available: true });
 
     if (brand) {
-      carsQuery.andWhere('LOWER(brand) = LOWER(:brand)', { brand });
+      carsQuery.andWhere('LOWER(cars.brand) = LOWER(:brand)', { brand });
     }
     if (category_id) {
-      carsQuery.andWhere('category_id = :category_id', { category_id });
+      carsQuery.andWhere('cars.category_id = :category_id', { category_id });
     }
     if (name) {
-      carsQuery.andWhere('LOWER(name) LIKE :name', {
+      carsQuery.andWhere('LOWER(cars.name) LIKE :name', {
         name: `%${name.toLowerCase()}%`,
       });
     }
 
-    const cars = await carsQuery.getMany();
+    const cars: ICarResponse[] = await carsQuery
+      .leftJoinAndSelect(
+        'categories',
+        'categories',
+        'categories.id = cars.category_id'
+      )
+      .select(['cars.*', 'categories.name as category_name'])
+      .getRawMany();
+
     return cars;
   }
 
-  async findById(id: string): Promise<Car> {
-    const car = await this.repository.findOne(id);
+  async findById(id: string): Promise<ICarResponse> {
+    const car: ICarResponse = await this.repository
+      .createQueryBuilder('cars')
+      .where('cars.available = available', { available: true })
+      .andWhere('cars.id = :id', { id })
+      .leftJoinAndSelect(
+        'categories',
+        'categories',
+        'categories.id = cars.category_id'
+      )
+      .select(['cars.*', 'categories.name as category_name'])
+      .getRawOne();
     return car;
   }
 }

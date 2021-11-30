@@ -4,6 +4,7 @@ import multer from 'multer';
 import uploadConfig from '@config/upload';
 import { CreateCarController } from '@modules/cars/useCases/createCar/CreateCarController';
 import { CreateCarSpecificationController } from '@modules/cars/useCases/createCarSpecification/CreateCarSpecificationController';
+import { ListAvailableCarByIdController } from '@modules/cars/useCases/listAvailableCarById/ListAvailableCarByIdController';
 import { ListAvailableCarsController } from '@modules/cars/useCases/listAvailableCars/ListAvailableCarsController';
 import { UploadCarImagesController } from '@modules/cars/useCases/uploadCarImagesUseCase/UploadCarImagesController';
 
@@ -16,6 +17,7 @@ const upload = multer(uploadConfig.upload('./tmp/cars'));
 
 const createCarController = new CreateCarController();
 const listAvailableCarsController = new ListAvailableCarsController();
+const listAvailableCarByIdController = new ListAvailableCarByIdController();
 const createCarSpecificationController = new CreateCarSpecificationController();
 const uploadCarImagesController = new UploadCarImagesController();
 
@@ -27,6 +29,8 @@ carsRoutes.post(
 );
 
 carsRoutes.get('/available', listAvailableCarsController.handle);
+
+carsRoutes.get('/available/:id', listAvailableCarByIdController.handle);
 
 carsRoutes.post(
   '/specifications/:id',
